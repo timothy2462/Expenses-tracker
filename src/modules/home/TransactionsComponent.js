@@ -1,5 +1,6 @@
-import styled from "styled-components";
 import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import { RiDeleteBin5Line } from "react-icons/ri"; // Import the delete icon from react-icons library
 
 const Container = styled.div`
   background-color: white;
@@ -20,6 +21,7 @@ const Container = styled.div`
     outline: none;
   }
 `;
+
 const Cell = styled.div`
   background-color: white;
   color: #0d1d2c;
@@ -34,33 +36,34 @@ const Cell = styled.div`
   justify-content: space-between;
   border-right: 4px solid ${(props) => (props.isExpense ? "red" : "green")};
 `;
-const TransactionCell = (props) => {
-  return (
-    <Cell isExpense={props.payload?.type === "EXPENSE"}>
-      <span>{props.payload?.desc}</span>
-      <span><span>&#8358;</span>{props.payload?.amount}</span>
-    </Cell>
-  );
-};
-const TransactionsComponent = (props) => {
+
+const DeleteIcon = styled(RiDeleteBin5Line)`
+  cursor: pointer;
+`;
+
+const TransactionsComponent = ({ transactions, deleteTransaction }) => {
   const [searchText, updateSearchText] = useState("");
-  const [filteredTransaction, updateTxn] = useState(props.transactions);
+  const [filteredTransaction, updateTxn] = useState(transactions);
 
   const filterData = (searchText) => {
     if (!searchText || !searchText.trim().length) {
-      updateTxn(props.transactions);
+      updateTxn(transactions);
       return;
     }
-    let txn = [...props.transactions];
-    txn = txn.filter((payload) =>
-      payload.desc.toLowerCase().includes(searchText.toLowerCase().trim()),
+    const txn = transactions.filter(
+      (payload) =>
+        payload.desc.toLowerCase().includes(searchText.toLowerCase().trim())
     );
     updateTxn(txn);
   };
 
   useEffect(() => {
     filterData(searchText);
-  }, [props.transactions]);
+  }, [transactions, searchText]);
+
+  const handleDeleteTransaction = (transactionId) => {
+    deleteTransaction(transactionId); // Call the deleteTransaction function passed from HomeComponent
+  };
 
   return (
     <Container>
@@ -73,10 +76,17 @@ const TransactionsComponent = (props) => {
         }}
       />
       {filteredTransaction?.map((payload) => (
-        <TransactionCell payload={payload} />
+        <Cell isExpense={payload.type === "EXPENSE"} key={payload.id}>
+          <span>{payload.desc}</span>
+          <span>
+            <span>&#8358;</span>
+            {payload.amount}
+          </span>
+          <DeleteIcon onClick={() => handleDeleteTransaction(payload.id)} />
+        </Cell>
       ))}
     </Container>
   );
 };
-export default TransactionsComponent;
 
+export default TransactionsComponent;

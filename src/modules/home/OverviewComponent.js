@@ -14,6 +14,7 @@ const ExpenseContainer = styled.div`
   flex-direction: row;
   gap: 12px;
   margin: 20px;
+
   width:300px
 `;
 const ExpenseBox = styled.div`
