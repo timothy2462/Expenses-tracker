@@ -69,7 +69,7 @@ const Container = styled.div`
   flex-direction: column;
   padding: 10px 22px;
   font-size: 18px;
-  width: 360px;
+  width: 280px;
   align-items: center;
   justify-content: space-between;
 `;
